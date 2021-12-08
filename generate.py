@@ -223,13 +223,14 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
            label, noise_mode, outdir, start, stop)
 
 
-def runway_vector_json():
-    f = open('/content/drive/MyDrive/Bikolabs/proyectos/Kursaal/modelos/rn.json')
+def runway_vector_json(G, path_rw):
+    f = open(path_rw)
     data = json.load(f)
-    print(data)
+    zs = np.array(data[0])
+    zm = zs.reshape(1, G.z_dim)
     zs = "movida"
     print(zs)
-    return zs
+    return zm
 
 
 def seeds_to_zs(G, seeds):
@@ -478,23 +479,31 @@ def generate_images(
             print('warn: --class=lbl ignored when running on an unconditional network')
 
     if(process == 'image'):
-        if runway_vector is not None:
-            print(runway_vector_json())
         if seeds is None:
             ctx.fail('--seeds option is required when not using --projected-w')
 
-        # Generate images.
-        for seed_idx, seed in enumerate(seeds):
-            print('Generating image for seed %d (%d/%d) ...' %
-                  (seed, seed_idx, len(seeds)))
-            z = torch.from_numpy(np.random.RandomState(
-                seed).randn(1, G.z_dim)).to(device)
+        if runway_vector is not None:
+            zm = runway_vector_json(G, runway_vector)
+            z = torch.from_numpy(zm).to(device)
             img = G(z, label, truncation_psi=truncation_psi,
                     noise_mode=noise_mode)
             img = (img.permute(0, 2, 3, 1) * 127.5 +
                    128).clamp(0, 255).to(torch.uint8)
             PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(
-                f'{outdir}/seed{seed:04d}.png')
+                f'{outdir}/seedmovida_v.png')
+        else:
+            # Generate images.
+            for seed_idx, seed in enumerate(seeds):
+                print('Generating image for seed %d (%d/%d) ...' %
+                      (seed, seed_idx, len(seeds)))
+                z = torch.from_numpy(np.random.RandomState(
+                    seed).randn(1, G.z_dim)).to(device)
+                img = G(z, label, truncation_psi=truncation_psi,
+                        noise_mode=noise_mode)
+                img = (img.permute(0, 2, 3, 1) * 127.5 +
+                       128).clamp(0, 255).to(torch.uint8)
+                PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(
+                    f'{outdir}/seed{seed:04d}.png')
 
     elif(process == 'interpolation' or process == 'interpolation-truncation'):
         # create path for frames
