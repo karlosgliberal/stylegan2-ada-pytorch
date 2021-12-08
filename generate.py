@@ -298,7 +298,7 @@ def truncation_traversal(G, device, z, label, start, stop, increment, noise_mode
     if runway_vector is not None:
         f = open(runway_vector)
         data = json.load(f)
-        zs = np.array(data[0])
+        zs = np.array(data)
         print("en la condición")
         zm = zs.reshape(1, G.z_dim)
         z = torch.from_numpy(zm).to(device)
