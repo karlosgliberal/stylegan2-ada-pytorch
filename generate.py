@@ -226,7 +226,7 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
 def runway_vector_json(G, path_rw):
     f = open(path_rw)
     data = json.load(f)
-    zs = np.array(data[0])
+    zs = np.array(data)
     zm = zs.reshape(1, G.z_dim)
     zs = "movida"
     print(zs)
