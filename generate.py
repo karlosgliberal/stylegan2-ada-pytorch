@@ -238,6 +238,7 @@ def seeds_to_zs(G, seeds, runway_vector):
         f = open(runway_vector)
         data = json.load(f)
         zs = np.array(data)
+        print(zs)
         zm = zs.reshape(1, G.z_dim)
         return zm
     else:
