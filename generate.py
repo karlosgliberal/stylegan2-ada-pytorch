@@ -222,7 +222,7 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
            label, noise_mode, outdir, start, stop)
 
 
-def runway_vector(G, R_vector):
+def runway_vector_json(G, R_vector):
     zs = "movida"
     print(zs)
     return zs
@@ -474,6 +474,8 @@ def generate_images(
             print('warn: --class=lbl ignored when running on an unconditional network')
 
     if(process == 'image'):
+        if runwar_vector is not None:
+            print(runway_vector_json())
         if seeds is None:
             ctx.fail('--seeds option is required when not using --projected-w')
 
