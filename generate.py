@@ -325,7 +325,6 @@ def zs_to_ws(G, device, label, truncation_psi, zs):
 @click.command()
 @click.pass_context
 @click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
-@click.option('--runway', 'runway_vector', help='Runway vector position', required=False)
 @click.option('--seeds', type=num_range, help='List of random seeds')
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--class', 'class_idx', type=int, help='Class label (unconditional if not specified)')
@@ -339,6 +338,7 @@ def zs_to_ws(G, device, label, truncation_psi, zs):
                   ['linear', 'easeInOutQuad', 'bounceEaseOut', 'circularEaseOut', 'circularEaseOut2']),
               default='linear', help='easing method', required=True)
 @click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
+@click.option('--runway', 'runway_vector', help='Runway vector position')
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 @click.option('--outdir', help='Where to save the output images', type=str, required=True, metavar='DIR')
 @click.option('--process', type=click.Choice(['image', 'interpolation', 'truncation', 'interpolation-truncation']), default='image', help='generation method', required=True)
@@ -359,7 +359,7 @@ def generate_images(
     interpolation: str,
     increment: Optional[float],
     network_pkl: str,
-    runway_vector: Optional[str],
+    runway_vector: str,
     process: str,
     random_seed: Optional[int],
     diameter: Optional[float],
