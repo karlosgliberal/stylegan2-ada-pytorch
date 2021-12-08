@@ -238,12 +238,14 @@ def seeds_to_zs(G, seeds, runway_vector):
         f = open(runway_vector)
         data = json.load(f)
         zs = np.array(data)
+        zm = zs.reshape(1, G.z_dim)
+        return zm
     else:
         zs = []
         for seed_idx, seed in enumerate(seeds):
             z = np.random.RandomState(seed).randn(1, G.z_dim)
             zs.append(z)
-    return zs
+        return zs
 
 # slightly modified version of
 # https://github.com/PDillis/stylegan2-fun/blob/master/run_generator.py#L399
