@@ -222,7 +222,7 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
            label, noise_mode, outdir, start, stop)
 
 
-def runway_vector_json(G, R_vector):
+def runway_vector_json():
     zs = "movida"
     print(zs)
     return zs
