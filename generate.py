@@ -233,20 +233,12 @@ def runway_vector_json(G, path_rw):
     return zm
 
 
-def seeds_to_zs(G, seeds, runway_vector):
-    if runway_vector is not None:
-        f = open(runway_vector)
-        data = json.load(f)
-        zs = np.array(data[0])
-        print(zs)
-        zm = zs.reshape(1, G.z_dim)
-        return zm
-    else:
-        zs = []
-        for seed_idx, seed in enumerate(seeds):
-            z = np.random.RandomState(seed).randn(1, G.z_dim)
-            zs.append(z)
-        return zs
+def seeds_to_zs(G, seeds):
+    zs = []
+    for seed_idx, seed in enumerate(seeds):
+        z = np.random.RandomState(seed).randn(1, G.z_dim)
+        zs.append(z)
+    return zs
 
 # slightly modified version of
 # https://github.com/PDillis/stylegan2-fun/blob/master/run_generator.py#L399
@@ -303,8 +295,16 @@ def truncation_traversal(G, device, z, label, start, stop, increment, noise_mode
     count = 1
     trunc = start
 
-    z = seeds_to_zs(G, z, runway_vector)[0]
-    z = torch.from_numpy(np.asarray(z)).to(device)
+    if runway_vector is not None:
+        f = open(runway_vector)
+        data = json.load(f)
+        zs = np.array(data[0])
+        print("en la condición")
+        zm = zs.reshape(1, G.z_dim)
+        z = torch.from_numpy(zm).to(device)
+    else:
+        z = seeds_to_zs(G, z)[0]
+        z = torch.from_numpy(np.asarray(z)).to(device)
 
     while trunc <= stop:
         print('Generating truncation %0.2f' % trunc)
