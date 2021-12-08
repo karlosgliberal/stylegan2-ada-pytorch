@@ -9,6 +9,7 @@
 """Generate images using pretrained network pickle."""
 
 import os
+import json
 import subprocess
 import re
 from typing import List, Optional
@@ -223,6 +224,9 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
 
 
 def runway_vector_json():
+    f = open('/content/drive/MyDrive/Bikolabs/proyectos/Kursaal/modelos/rn.json')
+    data = json.load(f)
+    print(data)
     zs = "movida"
     print(zs)
     return zs
