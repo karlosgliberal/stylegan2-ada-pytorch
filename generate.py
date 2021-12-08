@@ -359,7 +359,7 @@ def generate_images(
     interpolation: str,
     increment: Optional[float],
     network_pkl: str,
-    runwar_vector: Optional[str],
+    runway_vector: Optional[str],
     process: str,
     random_seed: Optional[int],
     diameter: Optional[float],
@@ -474,7 +474,7 @@ def generate_images(
             print('warn: --class=lbl ignored when running on an unconditional network')
 
     if(process == 'image'):
-        if runwar_vector is not None:
+        if runway_vector is not None:
             print(runway_vector_json())
         if seeds is None:
             ctx.fail('--seeds option is required when not using --projected-w')
