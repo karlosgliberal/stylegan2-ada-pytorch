@@ -191,7 +191,7 @@ def images(G, device, inputs, space, truncation_psi, label, noise_mode, outdir, 
             f'{outdir}/frame{idx:04d}.png')
 
 
-def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi, label, frames, noise_mode, outdir, interpolation, easing, diameter, start=None, stop=None):
+def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi, label, frames, noise_mode, outdir, interpolation, easing, diameter, start=None, stop=None, runway_vector=None):
     if(interpolation == 'noiseloop' or interpolation == 'circularloop'):
         if seeds is not None:
             print(
@@ -206,8 +206,15 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
         if projected_w is not None:
             points = np.load(projected_w)['w']
         else:
-            # get zs from seeds
-            points = seeds_to_zs(G, seeds)
+            if runway_vector is not None:
+                f = open(runway_vector)
+                data = json.load(f)
+                zs = np.array(data)
+                print("en la condición interploacion")
+                points = zs.reshape(1, G.z_dim)
+            else:
+                # get zs from seeds
+                points = seeds_to_zs(G, seeds)
             # convert to ws
             if(space == 'w'):
                 points = zs_to_ws(G, device, label, truncation_psi, points)
@@ -527,10 +534,10 @@ def generate_images(
 
         if process == 'interpolation-truncation':
             interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi,
-                        label, frames, noise_mode, dirpath, interpolation, easing, diameter, start, stop)
+                        label, frames, noise_mode, dirpath, interpolation, easing, diameter, start, stop, runway_vector)
         else:
             interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi,
-                        label, frames, noise_mode, dirpath, interpolation, easing, diameter)
+                        label, frames, noise_mode, dirpath, interpolation, easing, diameter, runway_vector)
 
         # convert to video
         cmd = f'ffmpeg -y -r {fps} -i {dirpath}/frame%04d.png -vcodec libx264 -pix_fmt yuv420p {outdir}/{vidname}.mp4'
