@@ -233,11 +233,15 @@ def runway_vector_json(G, path_rw):
     return zm
 
 
-def seeds_to_zs(G, seeds):
-    zs = []
-    for seed_idx, seed in enumerate(seeds):
-        z = np.random.RandomState(seed).randn(1, G.z_dim)
-        zs.append(z)
+def seeds_to_zs(G, seeds, runway_vector):
+    if runway_vector is not None:
+        print("movida")
+        zs = runway_vector_json(G, runway_vector)
+    else:
+        zs = []
+        for seed_idx, seed in enumerate(seeds):
+            z = np.random.RandomState(seed).randn(1, G.z_dim)
+            zs.append(z)
     return zs
 
 # slightly modified version of
@@ -291,11 +295,11 @@ def slerp_interpolate(zs, steps):
     return out
 
 
-def truncation_traversal(G, device, z, label, start, stop, increment, noise_mode, outdir):
+def truncation_traversal(G, device, z, label, start, stop, increment, noise_mode, outdir, runway_vector):
     count = 1
     trunc = start
 
-    z = seeds_to_zs(G, z)[0]
+    z = seeds_to_zs(G, z, runway_vector)[0]
     z = torch.from_numpy(np.asarray(z)).to(device)
 
     while trunc <= stop:
@@ -542,7 +546,7 @@ def generate_images(
 
         # generate frames
         truncation_traversal(G, device, seeds, label, start,
-                             stop, increment, noise_mode, dirpath)
+                             stop, increment, noise_mode, dirpath, runway_vector)
 
         # convert to video
         cmd = f'ffmpeg -y -r {fps} -i {dirpath}/frame%04d.png -vcodec libx264 -pix_fmt yuv420p {outdir}/{vidname}.mp4'
