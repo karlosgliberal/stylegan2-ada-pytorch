@@ -235,8 +235,9 @@ def runway_vector_json(G, path_rw):
 
 def seeds_to_zs(G, seeds, runway_vector):
     if runway_vector is not None:
-        print("movida")
-        zs = runway_vector_json(G, runway_vector)
+        f = open(runway_vector)
+        data = json.load(f)
+        zs = np.array(data)
     else:
         zs = []
         for seed_idx, seed in enumerate(seeds):
